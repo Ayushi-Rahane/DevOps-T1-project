@@ -6,6 +6,8 @@ require('dotenv').config();
 
 const { protect, admin } = require('./middleware/authMiddleware');
 const Complaint = require('./models/Complaint');
+// Register User model so Mongoose can .populate('userId') on complaints
+require('./models/User');
 
 const app = express();
 const PORT = process.env.PORT || 5002;
@@ -75,7 +77,8 @@ app.get('/', protect, async (req, res) => {
 
         res.json(complaints);
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('[GET /] Error fetching public complaints:', error);
+        res.status(500).json({ error: 'Server error: ' + error.message });
     }
 });
 
@@ -88,7 +91,8 @@ app.get('/user', protect, async (req, res) => {
 
         res.json(complaints);
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('[GET /user] Error fetching personal complaints:', error);
+        res.status(500).json({ error: 'Server error: ' + error.message });
     }
 });
 
@@ -101,7 +105,8 @@ app.get('/admin', protect, admin, async (req, res) => {
 
         res.json(complaints);
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('[GET /admin] Error fetching admin complaints:', error);
+        res.status(500).json({ error: 'Server error: ' + error.message });
     }
 });
 
@@ -135,7 +140,8 @@ app.put('/:id', protect, admin, async (req, res) => {
 
         res.json(complaint);
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('[PUT /:id] Error updating complaint status:', error);
+        res.status(500).json({ error: 'Server error: ' + error.message });
     }
 });
 

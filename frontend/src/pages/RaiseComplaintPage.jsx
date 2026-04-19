@@ -6,6 +6,7 @@ import api from '../services/api';
 
 const RaiseComplaintPage = () => {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const RaiseComplaintPage = () => {
   };
 
   return (
-    <DashboardLayout userName="Rahul Sharma">
+    <DashboardLayout userName={user.fullName || "Student"}>
       <button 
         onClick={() => navigate('/dashboard')}
         className="flex items-center text-white/70 hover:text-white transition-colors mb-6 group"
