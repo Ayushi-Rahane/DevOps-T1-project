@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import AuthLayout from '../components/auth/AuthLayout';
 import StudentLoginForm from '../components/auth/StudentLoginForm';
 import StudentRegisterForm from '../components/auth/StudentRegisterForm';
+import AdminLoginForm from '../components/auth/AdminLoginForm';
+import AdminRegisterForm from '../components/auth/AdminRegisterForm';
 
 const AuthPage = () => {
   const [role, setRole] = useState('student'); // 'student' or 'admin'
