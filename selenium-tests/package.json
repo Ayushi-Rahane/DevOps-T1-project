@@ -1,0 +1,14 @@
+{
+  "name": "selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E tests for IssueSphere",
+  "scripts": {
+    "test": "node runner.js",
+    "test:student-login": "node tests/studentLogin.test.js",
+    "test:admin-login": "node tests/adminLogin.test.js",
+    "test:complaint": "node tests/complaintSubmission.test.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.27.0"
+  }
+}

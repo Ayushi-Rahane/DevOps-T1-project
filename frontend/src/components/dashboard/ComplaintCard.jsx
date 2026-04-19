@@ -7,7 +7,7 @@ const ComplaintCard = ({ complaint, isAdminView = false }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (isAdminView) navigate(`/admin/complaints/${id}`);
+    if (isAdminView) navigate(`/admin/complaint/${id}`);
   };
 
   const getStatusColor = (status) => {
@@ -30,6 +30,7 @@ const ComplaintCard = ({ complaint, isAdminView = false }) => {
 
   return (
     <div
+      data-testid="complaint-card"
       onClick={handleClick}
       className={`bg-white/5 backdrop-blur-md border border-white/10 p-5 rounded-2xl transition-all duration-300 shadow-lg mb-4 ${
         isAdminView

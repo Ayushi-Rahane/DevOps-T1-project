@@ -1,4 +1,13 @@
 {
+  "name": "issuesphere",
+  "version": "1.0.0",
+  "description": "IssueSphere — Campus Complaint Management System (DevOps Project)",
+  "private": true,
+  "scripts": {
+    "seed": "node seed.js",
+    "test:selenium": "cd selenium-tests && npm test",
+    "test:e2e": "cd selenium-tests && npm test"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "mongodb": "^7.1.1"

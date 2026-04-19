@@ -57,7 +57,7 @@ const MyComplaintsPage = () => {
   return (
     <DashboardLayout userName={user.fullName || "Student"}>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white tracking-tight">My Complaints</h1>
+        <h1 data-testid="my-complaints-title" className="text-3xl font-bold text-white tracking-tight">My Complaints</h1>
         <p className="text-white/60 mt-1">Manage and track your submitted complaints</p>
       </div>
 

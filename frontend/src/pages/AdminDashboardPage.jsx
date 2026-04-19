@@ -83,7 +83,7 @@ const AdminDashboardPage = () => {
       notifications={notifications}
     >
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white tracking-tight">{pageTitle}</h1>
+        <h1 data-testid="admin-dashboard-title" className="text-3xl font-bold text-white tracking-tight">{pageTitle}</h1>
         <p className="text-white/60 mt-1">Manage and track all student complaints</p>
       </div>
 

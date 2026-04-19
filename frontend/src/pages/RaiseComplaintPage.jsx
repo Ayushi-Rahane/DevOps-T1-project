@@ -53,7 +53,7 @@ const RaiseComplaintPage = () => {
       </button>
 
       <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8 max-w-3xl shadow-lg">
-        <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Raise a Complaint</h1>
+        <h1 data-testid="raise-complaint-title" className="text-3xl font-bold text-white tracking-tight mb-2">Raise a Complaint</h1>
         <p className="text-white/60 mb-8">Submit your issue and we'll work to resolve it as soon as possible</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">

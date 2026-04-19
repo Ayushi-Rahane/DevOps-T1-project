@@ -46,12 +46,12 @@ const StudentLoginForm = ({ onToggleMode }) => {
       <form onSubmit={handleSubmit} className="space-y-5">
         
         <InputField 
-          icon={Mail} type="email" name="email" 
+          icon={Mail} type="email" name="email" data-testid="student-email"
           placeholder="your.email@campus.edu" value={formData.email} onChange={handleChange} required 
         />
         
         <InputField 
-          icon={Lock} type="password" name="password" 
+          icon={Lock} type="password" name="password" data-testid="student-password"
           placeholder="Enter your password" value={formData.password} onChange={handleChange} required 
         />
 
@@ -77,6 +77,7 @@ const StudentLoginForm = ({ onToggleMode }) => {
 
         <button
           type="submit"
+          data-testid="student-login-btn"
           className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.2)] text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-900 transform transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           Sign In

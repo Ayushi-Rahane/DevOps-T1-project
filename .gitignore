@@ -17,3 +17,6 @@ logs/
 # Frontend build artifacts
 frontend/dist/
 frontend/build/
+
+# Selenium test dependencies
+selenium-tests/node_modules/

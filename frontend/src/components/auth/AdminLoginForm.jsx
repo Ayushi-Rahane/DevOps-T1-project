@@ -63,23 +63,24 @@ const AdminLoginForm = ({ onToggleMode }) => {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField 
-          icon={Mail} type="email" name="email" 
+          icon={Mail} type="email" name="email" data-testid="admin-email"
           placeholder="admin@campus.edu" value={formData.email} onChange={handleChange} required 
         />
         
         <InputField 
-          icon={Lock} type="password" name="password" 
+          icon={Lock} type="password" name="password" data-testid="admin-password"
           placeholder="Admin Password" value={formData.password} onChange={handleChange} required 
         />
 
         <InputField 
-          icon={ShieldCheck} type="password" name="adminKey" 
+          icon={ShieldCheck} type="password" name="adminKey" data-testid="admin-key"
           placeholder="Secret Security Key" value={formData.adminKey} onChange={handleChange} required 
         />
 
         <div className="pt-2">
           <button
             type="submit"
+            data-testid="admin-login-btn"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.2)] text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:ring-offset-slate-900 transform transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             Authenticate

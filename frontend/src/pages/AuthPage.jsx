@@ -18,6 +18,7 @@ const AuthPage = () => {
       <div className="flex justify-center mb-6 border-b border-white/10 pb-4">
         <div className="flex space-x-2 bg-white/5 p-1 rounded-xl backdrop-blur-sm">
           <button
+            data-testid="tab-student"
             onClick={() => { setRole('student'); setIsLogin(true); }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
               role === 'student'
@@ -28,6 +29,7 @@ const AuthPage = () => {
             Student
           </button>
           <button
+            data-testid="tab-admin"
             onClick={() => { setRole('admin'); setIsLogin(true); }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
               role === 'admin'

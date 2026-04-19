@@ -40,11 +40,12 @@ const DashboardPage = () => {
     <DashboardLayout userName={user.fullName || "Student"}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
+          <h1 data-testid="dashboard-title" className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
           <p className="text-white/60 mt-1">View all public complaints and track your issues</p>
         </div>
         
         <button 
+          data-testid="btn-raise-complaint"
           onClick={() => navigate('/dashboard/raise')}
           className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:from-blue-500 hover:to-indigo-500 transform transition-all hover:-translate-y-0.5"
         >

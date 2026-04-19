@@ -172,7 +172,7 @@ const DashboardLayout = ({
             <span className="text-sm font-medium text-white/90 pr-2">{userName}</span>
           </div>
 
-          <button onClick={handleLogout} className="text-white/60 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-white/5">
+          <button data-testid="logout-btn" onClick={handleLogout} className="text-white/60 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-white/5">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
@@ -187,6 +187,7 @@ const DashboardLayout = ({
             return (
               <button
                 key={item.label}
+                data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                 onClick={() => navigate(item.path)}
                 className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-300 ${
                   isActive
