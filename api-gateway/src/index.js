@@ -7,8 +7,16 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS — allow all origins (needed for Render cloud deployment)
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Handle preflight OPTIONS requests explicitly (before proxy intercepts them)
+app.options('*', cors());
+
 app.use(morgan('dev'));
 
 // Health check endpoint for Docker
