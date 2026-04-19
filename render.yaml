@@ -1,0 +1,89 @@
+# render.yaml — Render Blueprint (Infrastructure as Code)
+# This file lets Render automatically create and connect all services.
+# Usage: Render Dashboard → Blueprints → New Blueprint Instance → Select this repo
+
+services:
+  # ─── 1. Auth Service (Private — not publicly accessible) ───
+  - type: pserv
+    name: issuesphere-auth
+    runtime: node
+    rootDir: auth-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: AUTH_MONGO_URI
+        sync: false   # Set manually in Render Dashboard
+      - key: JWT_SECRET
+        sync: false   # Set manually in Render Dashboard
+      - key: JWT_EXPIRES_IN
+        value: 7d
+
+  # ─── 2. Complaint Service (Private) ────────────────────────
+  - type: pserv
+    name: issuesphere-complaint
+    runtime: node
+    rootDir: complaint-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5002
+      - key: COMPLAINT_MONGO_URI
+        sync: false   # Set manually in Render Dashboard
+      - key: JWT_SECRET
+        sync: false   # Set manually in Render Dashboard
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false   # Set to: http://issuesphere-notification:5003/log
+
+  # ─── 3. Notification Service (Private) ─────────────────────
+  - type: pserv
+    name: issuesphere-notification
+    runtime: node
+    rootDir: notification-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5003
+      - key: NOTIFICATION_MONGO_URI
+        sync: false   # Set manually in Render Dashboard
+      - key: JWT_SECRET
+        sync: false   # Set manually in Render Dashboard
+
+  # ─── 4. API Gateway (Public Web Service — entry point) ─────
+  - type: web
+    name: issuesphere-gateway
+    runtime: node
+    rootDir: api-gateway
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5005
+      - key: AUTH_SERVICE_URL
+        sync: false   # Set to: http://issuesphere-auth:5001
+      - key: COMPLAINT_SERVICE_URL
+        sync: false   # Set to: http://issuesphere-complaint:5002
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false   # Set to: http://issuesphere-notification:5003
+
+  # ─── 5. Frontend (Static Site — served by Render CDN) ──────
+  - type: web
+    name: issuesphere-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false   # Set to: https://issuesphere-gateway.onrender.com/api

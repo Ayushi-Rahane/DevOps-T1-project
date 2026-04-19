@@ -186,6 +186,130 @@ Git Push → Jenkins detects change → Pulls code
 
 ---
 
+## Cloud Deployment (Render)
+
+The application is deployed to **Render.com** using Infrastructure as Code via a `render.yaml` Blueprint.
+
+### Deployment Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     RENDER CLOUD                        │
+│                                                         │
+│  ┌──────────────────────┐                               │
+│  │ issuesphere-frontend │  ← Render Static Site (CDN)   │
+│  │   (Vite + React)     │     https://...onrender.com   │
+│  └──────────┬───────────┘                               │
+│             │ VITE_API_URL                               │
+│             ▼                                            │
+│  ┌──────────────────────┐                               │
+│  │ issuesphere-gateway  │  ← Render Web Service (public)│
+│  │   (API Gateway)      │     https://...onrender.com   │
+│  └──┬────────┬────────┬─┘                               │
+│     │        │        │   (Render Private Network)       │
+│     ▼        ▼        ▼                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐                             │
+│  │ Auth │ │Complt│ │Notif │  ← Render Private Services  │
+│  │:5001 │ │:5002 │ │:5003 │    (internal only, no       │
+│  └──────┘ └──────┘ └──────┘     public URL)              │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+                        │
+                        ▼
+              ┌──────────────────┐
+              │  MongoDB Atlas   │  ← Cloud Database
+              │  (shared cluster)│    (already configured)
+              └──────────────────┘
+```
+
+### Render Service Mapping
+
+| Local Service | Render Type | Render Name | Publicly Accessible? |
+|---------------|-------------|-------------|---------------------|
+| `frontend` | **Static Site** | `issuesphere-frontend` | ✅ Yes — served via CDN |
+| `api-gateway` | **Web Service** | `issuesphere-gateway` | ✅ Yes — public API entry point |
+| `auth-service` | **Private Service** | `issuesphere-auth` | ❌ No — internal only |
+| `complaint-service` | **Private Service** | `issuesphere-complaint` | ❌ No — internal only |
+| `notification-service` | **Private Service** | `issuesphere-notification` | ❌ No — internal only |
+| MongoDB | **MongoDB Atlas** | — | External cloud DB |
+
+### How Services Communicate on Render
+
+- **Frontend → API Gateway**: The frontend uses the `VITE_API_URL` environment variable (e.g., `https://issuesphere-gateway.onrender.com/api`) to send all API requests to the gateway.
+- **API Gateway → Backend Services**: The gateway uses Render's **Private Network**. Private Services get internal hostnames (e.g., `issuesphere-auth`), and the gateway routes requests using env vars like `AUTH_SERVICE_URL=http://issuesphere-auth:5001`.
+- **Complaint Service → Notification Service**: The complaint service calls the notification service internally via `NOTIFICATION_SERVICE_URL=http://issuesphere-notification:5003/log`.
+- **All Backend Services → MongoDB Atlas**: Each service connects to the same MongoDB Atlas cluster using its own `*_MONGO_URI` env var.
+
+### Required Environment Variables (Per Service)
+
+#### issuesphere-auth (Private Service)
+| Variable | Example Value |
+|----------|---------------|
+| `PORT` | `5001` |
+| `AUTH_MONGO_URI` | `mongodb+srv://user:pass@cluster.mongodb.net/issuesphere_db` |
+| `JWT_SECRET` | `super_secure_issuesphere_secret_key` |
+| `JWT_EXPIRES_IN` | `7d` |
+
+#### issuesphere-complaint (Private Service)
+| Variable | Example Value |
+|----------|---------------|
+| `PORT` | `5002` |
+| `COMPLAINT_MONGO_URI` | `mongodb+srv://user:pass@cluster.mongodb.net/issuesphere_db` |
+| `JWT_SECRET` | `super_secure_issuesphere_secret_key` |
+| `NOTIFICATION_SERVICE_URL` | `http://issuesphere-notification:5003/log` |
+
+#### issuesphere-notification (Private Service)
+| Variable | Example Value |
+|----------|---------------|
+| `PORT` | `5003` |
+| `NOTIFICATION_MONGO_URI` | `mongodb+srv://user:pass@cluster.mongodb.net/issuesphere_db` |
+| `JWT_SECRET` | `super_secure_issuesphere_secret_key` |
+
+#### issuesphere-gateway (Web Service)
+| Variable | Example Value |
+|----------|---------------|
+| `PORT` | `5005` |
+| `AUTH_SERVICE_URL` | `http://issuesphere-auth:5001` |
+| `COMPLAINT_SERVICE_URL` | `http://issuesphere-complaint:5002` |
+| `NOTIFICATION_SERVICE_URL` | `http://issuesphere-notification:5003` |
+
+#### issuesphere-frontend (Static Site)
+| Variable | Example Value |
+|----------|---------------|
+| `VITE_API_URL` | `https://issuesphere-gateway.onrender.com/api` |
+
+### Deployment Steps (In Order)
+
+1. **Push code to GitHub** — Make sure all files including `render.yaml` are committed.
+2. **Go to Render Dashboard** → [https://dashboard.render.com](https://dashboard.render.com)
+3. **Create Blueprint**:
+   - Click **Blueprints** → **New Blueprint Instance**
+   - Select your GitHub repository
+   - Render reads `render.yaml` and creates all 5 services automatically
+4. **Set Environment Variables**:
+   - Go to each service in the Render Dashboard
+   - Add the environment variables listed above (especially `*_MONGO_URI` and `JWT_SECRET`)
+   - For the **frontend**, set `VITE_API_URL` to the gateway's public URL + `/api`
+5. **Deploy** — Click "Manual Deploy" → "Deploy latest commit" on each service
+6. **Verify** — Open the frontend URL in your browser and test login, complaint, admin flows
+
+### SPA Routing
+
+The `frontend/public/_redirects` file contains:
+```
+/* /index.html 200
+```
+This tells Render's static site hosting to serve `index.html` for all routes, which is required for React Router to handle client-side navigation (e.g., `/auth`, `/dashboard`, `/admin`).
+
+### Assumptions & Limitations
+
+- **Free tier**: Render free-tier services spin down after 15 minutes of inactivity. First request after idle may take 30-60 seconds.
+- **MongoDB Atlas**: The database is already hosted on MongoDB Atlas cloud, so no database deployment is needed on Render.
+- **Secrets**: All secrets (`MONGO_URI`, `JWT_SECRET`) must be set manually in the Render Dashboard — they are never stored in `render.yaml` or committed to Git.
+- **Local development**: The local Docker setup (`docker-compose.yml`) continues to work unchanged. The `render.yaml` is only used by Render.
+
+---
+
 ## Project Structure
 ```
 ├── auth-service/           # JWT auth microservice
@@ -193,9 +317,12 @@ Git Push → Jenkins detects change → Pulls code
 ├── notification-service/   # Notification logging microservice
 ├── api-gateway/            # HTTP reverse proxy
 ├── frontend/               # Vite + React frontend
+│   └── public/_redirects   # SPA routing for Render Static Site
 ├── selenium-tests/         # Selenium E2E test suite
-├── docker-compose.yml      # Multi-container orchestration
+├── docker-compose.yml      # Local multi-container orchestration
+├── render.yaml             # Render cloud deployment blueprint (IaC)
 ├── Jenkinsfile             # Jenkins CI/CD pipeline definition
+├── deploy.sh               # Deployment trigger script
 ├── wait-for-services.js    # Service readiness health-check
 ├── seed.js                 # Database seeding script
 └── README.md

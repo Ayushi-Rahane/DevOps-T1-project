@@ -75,6 +75,15 @@ pipeline {
                 sh 'npm run test:selenium'
             }
         }
+        // ──────────────────────────────────────────────
+        // Stage 7: Deploy to Staging/Cloud (Render)
+        // ──────────────────────────────────────────────
+        stage('Deploy to Cloud') {
+            steps {
+                echo '🚀 Tests passed! Triggering automated deployment to Render...'
+                sh './deploy.sh'
+            }
+        }
     }
 
     // ──────────────────────────────────────────────────
