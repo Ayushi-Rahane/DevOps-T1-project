@@ -1,12 +1,13 @@
 # render.yaml — Render Blueprint (Infrastructure as Code)
-# This file lets Render automatically create and connect all services.
+# All services use FREE tier (type: web) — no payment required
 # Usage: Render Dashboard → Blueprints → New Blueprint Instance → Select this repo
 
 services:
-  # ─── 1. Auth Service (Private — not publicly accessible) ───
-  - type: pserv
+  # ─── 1. Auth Service (Free Web Service) ────────────────────
+  - type: web
     name: issuesphere-auth
     runtime: node
+    plan: free
     rootDir: auth-service
     buildCommand: npm install
     startCommand: npm start
@@ -20,10 +21,11 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
 
-  # ─── 2. Complaint Service (Private) ────────────────────────
-  - type: pserv
+  # ─── 2. Complaint Service (Free Web Service) ───────────────
+  - type: web
     name: issuesphere-complaint
     runtime: node
+    plan: free
     rootDir: complaint-service
     buildCommand: npm install
     startCommand: npm start
@@ -35,12 +37,13 @@ services:
       - key: JWT_SECRET
         sync: false   # Set manually in Render Dashboard
       - key: NOTIFICATION_SERVICE_URL
-        sync: false   # Set to: http://issuesphere-notification:5003/log
+        sync: false   # Set to: https://issuesphere-notification.onrender.com/log
 
-  # ─── 3. Notification Service (Private) ─────────────────────
-  - type: pserv
+  # ─── 3. Notification Service (Free Web Service) ────────────
+  - type: web
     name: issuesphere-notification
     runtime: node
+    plan: free
     rootDir: notification-service
     buildCommand: npm install
     startCommand: npm start
@@ -52,10 +55,11 @@ services:
       - key: JWT_SECRET
         sync: false   # Set manually in Render Dashboard
 
-  # ─── 4. API Gateway (Public Web Service — entry point) ─────
+  # ─── 4. API Gateway (Free Web Service — public entry point) ─
   - type: web
     name: issuesphere-gateway
     runtime: node
+    plan: free
     rootDir: api-gateway
     buildCommand: npm install
     startCommand: npm start
@@ -63,23 +67,20 @@ services:
       - key: PORT
         value: 5005
       - key: AUTH_SERVICE_URL
-        sync: false   # Set to: http://issuesphere-auth:5001
+        sync: false   # Set to: https://issuesphere-auth.onrender.com
       - key: COMPLAINT_SERVICE_URL
-        sync: false   # Set to: http://issuesphere-complaint:5002
+        sync: false   # Set to: https://issuesphere-complaint.onrender.com
       - key: NOTIFICATION_SERVICE_URL
-        sync: false   # Set to: http://issuesphere-notification:5003
+        sync: false   # Set to: https://issuesphere-notification.onrender.com
 
   # ─── 5. Frontend (Static Site — served by Render CDN) ──────
   - type: web
     name: issuesphere-frontend
     runtime: static
+    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: public, max-age=0, must-revalidate
     routes:
       - type: rewrite
         source: /*
