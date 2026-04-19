@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "seed": "node seed.js",
+    "wait": "node wait-for-services.js",
     "test:selenium": "cd selenium-tests && npm test",
     "test:e2e": "cd selenium-tests && npm test"
   },

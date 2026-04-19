@@ -116,6 +116,76 @@ All key UI elements have `data-testid` attributes for reliable Selenium selector
 
 ---
 
+## Jenkins CI/CD Pipeline
+
+Automated build and test pipeline using **Jenkins** for Continuous Integration.
+
+### What Jenkins Does
+
+Jenkins automates the entire build-test cycle. Every time code is pushed, Jenkins:
+1. Pulls the latest code from Git
+2. Installs all dependencies
+3. Builds the frontend to check for compile errors
+4. Starts all microservices using Docker Compose
+5. Seeds the database with test data
+6. Runs Selenium E2E tests in headless Chrome
+7. Cleans up all Docker containers after completion
+
+### Pipeline Stages
+
+| # | Stage | What It Does |
+|---|-------|-------------|
+| 1 | **Checkout** | Pulls the latest code from the Git repository |
+| 2 | **Install Dependencies** | Runs `npm install` for root and selenium-tests |
+| 3 | **Build Frontend** | Runs `npm run build` in frontend to verify the React app compiles |
+| 4 | **Start Services** | Runs `docker compose up -d --build` and waits for all services to be ready |
+| 5 | **Seed Database** | Runs `npm run seed` to insert test users and complaints |
+| 6 | **Run Selenium Tests** | Runs `npm run test:selenium` in headless mode |
+| — | **Cleanup (always)** | Runs `docker compose down` to stop and remove all containers |
+
+### Prerequisites for Jenkins
+
+The Jenkins server (or agent) must have:
+- **Node.js** (v18+) and npm
+- **Docker** and Docker Compose
+- **Google Chrome** browser
+- **Git**
+
+### How to Set Up in Jenkins
+
+1. **Install Jenkins** on your machine (or use Docker)
+2. **Install required plugins**: Pipeline, Git, NodeJS
+3. **Create a new Pipeline job**:
+   - Go to Jenkins → New Item → Pipeline
+   - Name it: `IssueSphere-CI`
+   - Under Pipeline section, select **Pipeline script from SCM**
+   - SCM: Git
+   - Repository URL: your Git repository URL
+   - Branch: `*/main` (or your branch name)
+   - Script Path: `Jenkinsfile`
+4. **Save and click "Build Now"**
+
+### How It Connects Together
+
+```
+Git Push → Jenkins detects change → Pulls code
+    → Installs deps → Builds frontend
+    → Docker Compose starts all services
+    → Seeds MongoDB with test data
+    → Selenium tests run in headless Chrome
+    → Docker Compose cleans up
+    → Jenkins reports PASS / FAIL
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `Jenkinsfile` | Defines the CI/CD pipeline stages |
+| `wait-for-services.js` | Health-check script that waits for services to be ready |
+
+---
+
 ## Project Structure
 ```
 ├── auth-service/           # JWT auth microservice
@@ -125,6 +195,8 @@ All key UI elements have `data-testid` attributes for reliable Selenium selector
 ├── frontend/               # Vite + React frontend
 ├── selenium-tests/         # Selenium E2E test suite
 ├── docker-compose.yml      # Multi-container orchestration
+├── Jenkinsfile             # Jenkins CI/CD pipeline definition
+├── wait-for-services.js    # Service readiness health-check
 ├── seed.js                 # Database seeding script
 └── README.md
 ```
