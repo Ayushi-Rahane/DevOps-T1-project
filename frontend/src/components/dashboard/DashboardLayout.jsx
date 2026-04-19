@@ -178,9 +178,9 @@ const DashboardLayout = ({
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0">
         {/* Sidebar */}
-        <aside className="w-64 bg-white/5 backdrop-blur-sm border-r border-white/10 p-4 flex flex-col space-y-2 z-0 hidden md:flex overflow-hidden">
+        <aside className="w-64 bg-white/5 backdrop-blur-sm border-r border-white/10 p-4 flex flex-col space-y-2 z-0 hidden md:flex md:sticky md:top-16 md:self-start md:max-h-[calc(100vh-4rem)] md:overflow-y-auto">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path ||
               (item.path === '/admin/dashboard' && location.pathname === '/admin');
