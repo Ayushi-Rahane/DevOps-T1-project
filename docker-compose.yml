@@ -1,0 +1,61 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    container_name: api_gateway
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./api-gateway/src:/app/src
+    environment:
+      - PORT=5005
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - COMPLAINT_SERVICE_URL=http://complaint-service:5002
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5003
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth_service
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./auth-service/src:/app/src
+    environment:
+      - PORT=5001
+      - AUTH_MONGO_URI=mongodb+srv://ayushirahane2021_db_user:RKleVGaYPhRF3T7g@cluster0.5jqbeob.mongodb.net/issuesphere_db?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=super_secure_issuesphere_secret_key
+      - JWT_EXPIRES_IN=7d
+
+  complaint-service:
+    build: ./complaint-service
+    container_name: complaint_service
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./complaint-service/src:/app/src
+    environment:
+      - PORT=5002
+      - COMPLAINT_MONGO_URI=mongodb+srv://ayushirahane2021_db_user:RKleVGaYPhRF3T7g@cluster0.5jqbeob.mongodb.net/issuesphere_db?retryWrites=true&w=majority&appName=Cluster0
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5003/log
+      - JWT_SECRET=super_secure_issuesphere_secret_key
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification_service
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./notification-service/src:/app/src
+    environment:
+      - PORT=5003
+      - NOTIFICATION_MONGO_URI=mongodb+srv://ayushirahane2021_db_user:RKleVGaYPhRF3T7g@cluster0.5jqbeob.mongodb.net/issuesphere_db?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=super_secure_issuesphere_secret_key
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - api-gateway

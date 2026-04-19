@@ -10,7 +10,7 @@ const User = require('./models/User');
 const app = express();
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.AUTH_MONGO_URI;
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'super_secure_issuesphere_secret_key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 app.use(cors());
