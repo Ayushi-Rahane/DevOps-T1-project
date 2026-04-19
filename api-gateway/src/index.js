@@ -14,8 +14,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Handle preflight OPTIONS requests explicitly (before proxy intercepts them)
-app.options('*', cors());
+// Handle preflight OPTIONS requests (Express 5 syntax)
+app.options('/{*path}', cors());
 
 app.use(morgan('dev'));
 
