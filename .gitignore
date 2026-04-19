@@ -1,0 +1,19 @@
+# Environment variables (contains sensitive DB credentials)
+.env
+*/.env
+**/.env
+
+# Node.js dependencies
+node_modules/
+*/node_modules/
+
+# Mac OS specific
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Frontend build artifacts
+frontend/dist/
+frontend/build/
