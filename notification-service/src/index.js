@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.PORT || 5003; // 5003 is the default port for the notification service
 const MONGO_URI = process.env.NOTIFICATION_MONGO_URI || 'mongodb://mongodb:27017/issuesphere_db';
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secure_issuesphere_secret_key';
 
