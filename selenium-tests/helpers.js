@@ -12,7 +12,7 @@ const chrome = require('selenium-webdriver/chrome');
 
 // ── Config ──────────────────────────────────────────────────────
 const BASE_URL = process.env.APP_URL || 'http://localhost:5173';
-const TIMEOUT  = 10000; // 10 seconds max wait
+const TIMEOUT = 10000; // 10 seconds max wait
 
 // ── Test credentials (match seed.js) ────────────────────────────
 const TEST_USERS = {
@@ -30,7 +30,7 @@ const TEST_USERS = {
 };
 
 // ── Build a Chrome WebDriver ────────────────────────────────────
-function buildDriver() {
+function buildDriver() { // this function creates a new chrome browser that selenium will controll
   const options = new chrome.Options();
 
   // Run headless in CI (set HEADLESS=true), headed locally by default
