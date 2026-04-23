@@ -17,7 +17,7 @@ app.use(morgan('dev'));
 // ── Notification Model ──────────────────────────────────────────
 const notificationSchema = new mongoose.Schema({
     // null = broadcast to all admins
-    userId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    userId: { type: mongoose.Schema.Types.ObjectId, default: null }, // null = broadcast to all admins
     forRole: { type: String, enum: ['student', 'admin', 'all'], default: 'admin' },
     message: { type: String, required: true },
     type: { type: String, enum: ['new_complaint', 'status_change', 'general'], default: 'general' },
