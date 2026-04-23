@@ -4,7 +4,7 @@ const api = axios.create({
   // Use environment variable for cloud deployment, fallback to localhost for local dev
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5005/api',
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json', // this is code line
   },
 });
 
