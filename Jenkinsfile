@@ -4,6 +4,8 @@ pipeline {
     environment {
         // Run Selenium in headless mode (no GUI) inside Jenkins
         HEADLESS = 'true'
+        // Add Homebrew path so Jenkins can find node, npm, and docker
+        PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
     }
 
     stages {
