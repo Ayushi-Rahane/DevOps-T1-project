@@ -51,16 +51,16 @@ const DashboardLayout = ({
   };
 
   const studentNavItems = [
-    { icon: LayoutDashboard, label: 'Dashboard',       path: '/dashboard' },
-    { icon: PlusCircle,      label: 'Raise Complaint', path: '/dashboard/raise' },
-    { icon: FileText,        label: 'My Complaints',   path: '/dashboard/my-complaints' }
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+    { icon: PlusCircle, label: 'Raise Complaint', path: '/dashboard/raise' },
+    { icon: FileText, label: 'My Complaints', path: '/dashboard/my-complaints' }
   ];
 
   const adminNavItems = [
     { icon: LayoutDashboard, label: 'All Complaints', path: '/admin/dashboard' },
-    { icon: Clock,           label: 'Pending',        path: '/admin/dashboard/pending',     badge: pendingCount,    badgeColor: 'bg-amber-500' },
-    { icon: Activity,        label: 'In Progress',    path: '/admin/dashboard/in-progress', badge: inProgressCount, badgeColor: 'bg-blue-500' },
-    { icon: CheckCircle2,    label: 'Resolved',       path: '/admin/dashboard/resolved' }
+    { icon: Clock, label: 'Pending', path: '/admin/dashboard/pending', badge: pendingCount, badgeColor: 'bg-amber-500' },
+    { icon: Activity, label: 'In Progress', path: '/admin/dashboard/in-progress', badge: inProgressCount, badgeColor: 'bg-blue-500' },
+    { icon: CheckCircle2, label: 'Resolved', path: '/admin/dashboard/resolved' }
   ];
 
   const navItems = role === 'admin' ? adminNavItems : studentNavItems;
@@ -100,7 +100,7 @@ const DashboardLayout = ({
                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
                   <h3 className="text-white font-semibold text-sm">Notifications</h3>
                   <div className="flex items-center gap-2">
-                    {unreadCount > 0 && (
+                    {unreadCount > 0 && ( // if unreadCount is greater than 0, show the mark all read button
                       <button onClick={markAllRead} className="text-xs text-blue-400 hover:text-blue-300">
                         Mark all read
                       </button>
@@ -123,8 +123,8 @@ const DashboardLayout = ({
                         key={n._id}
                         onClick={async () => {
                           setShowNotifications(false);
-                          await api.put(`/notifications/${n._id}/read`).catch(() => {});
-                          setNotifications(prev => prev.map(x => x._id === n._id ? {...x, isRead: true} : x));
+                          await api.put(`/notifications/${n._id}/read`).catch(() => { });
+                          setNotifications(prev => prev.map(x => x._id === n._id ? { ...x, isRead: true } : x));
                           if (n.complaintId) {
                             navigate(role === 'admin'
                               ? `/admin/complaints/${n.complaintId}`
@@ -134,13 +134,12 @@ const DashboardLayout = ({
                         className={`w-full text-left px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors ${!n.isRead ? 'bg-blue-500/5' : ''}`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                            n.type === 'new_complaint'  ? 'bg-pink-500/20' :
-                            n.type === 'status_change'  ? 'bg-blue-500/20' : 'bg-white/10'
-                          }`}>
-                            {n.type === 'new_complaint'  && <AlertCircle className="w-4 h-4 text-pink-400" />}
-                            {n.type === 'status_change'  && <CheckCircle2 className="w-4 h-4 text-blue-400" />}
-                            {n.type === 'general'        && <Bell className="w-4 h-4 text-white/50" />}
+                          <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type === 'new_complaint' ? 'bg-pink-500/20' :
+                              n.type === 'status_change' ? 'bg-blue-500/20' : 'bg-white/10'
+                            }`}>
+                            {n.type === 'new_complaint' && <AlertCircle className="w-4 h-4 text-pink-400" />}
+                            {n.type === 'status_change' && <CheckCircle2 className="w-4 h-4 text-blue-400" />}
+                            {n.type === 'general' && <Bell className="w-4 h-4 text-white/50" />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className={`text-xs font-medium truncate ${n.isRead ? 'text-white/60' : 'text-white'}`}>
@@ -189,11 +188,10 @@ const DashboardLayout = ({
                 key={item.label}
                 data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                 onClick={() => navigate(item.path)}
-                className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-300 ${
-                  isActive
+                className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-300 ${isActive
                     ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30 shadow-[0_0_15px_rgba(37,99,235,0.1)]'
                     : 'text-white/70 hover:bg-white/5 hover:text-white border border-transparent'
-                }`}
+                  }`}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-white/50'}`} />
