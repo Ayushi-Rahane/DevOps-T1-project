@@ -12,7 +12,7 @@
 const http = require('http');
 
 const SERVICES = [
-  { name: 'Frontend',    url: 'http://localhost:5173' },
+  { name: 'Frontend', url: 'http://localhost:5173' },
   { name: 'API Gateway', url: 'http://localhost:5005/api/complaints' },
 ];
 
@@ -23,7 +23,7 @@ const INTERVAL_MS = 3000; // 3 seconds between attempts
 function checkUrl(url) {
   return new Promise((resolve) => {
     http.get(url, (res) => {
-      resolve(res.statusCode >= 200 && res.statusCode < 500);
+      resolve(res.statusCode >= 200 && res.statusCode < 500); // test 
     }).on('error', () => resolve(false));
   });
 }
