@@ -54,7 +54,7 @@ app.post('/log', async (req, res) => {
             message,
             type: type || 'general',
             complaintId: complaintId || null,
-            complaintTitle: complaintTitle || '',
+            complaintTitle: complaintTitle || '', // here it is written as complaintTitle not complaint_title , this is code line 
         });
         res.status(201).json({ status: 'Notification saved' });
     } catch (err) {
