@@ -60,7 +60,7 @@ app.post('/log', async (req, res) => {
     } catch (err) {
         console.error('Failed to save notification:', err.message);
         res.status(500).json({ error: err.message });
-    }
+    } // test change
 });
 
 // ── GET /  → fetch notifications for the logged-in user ──────────
