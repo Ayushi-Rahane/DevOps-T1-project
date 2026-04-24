@@ -59,7 +59,7 @@ async function runComplaintSubmissionTest() {
       await clearAndType(driver, descInput, 'This is an automated test complaint created by Selenium.');
 
       const categorySelect = await waitFor(driver, 'select[name="category"]');
-      await categorySelect.sendKeys('Infrastructure');
+      await categorySelect.findElement(By.xpath('//option[@value="Infrastructure"]')).click();
 
       logPass('Complaint form filled in');
       passed++;
