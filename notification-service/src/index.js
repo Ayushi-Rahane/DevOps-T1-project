@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secure_issuesphere_secret_ke
 
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan('dev')); // This is code line
 
 // ── Notification Model ──────────────────────────────────────────
 const notificationSchema = new mongoose.Schema({
